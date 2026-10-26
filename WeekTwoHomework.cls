@@ -1,7 +1,7 @@
 public with sharing class WeekTwoHomework {
     public static void queryForListOfContacts() {
         List<Contact> contactList = [
-            SELECT ID, Name, Account.Name, Industry
+            SELECT ID, Name, Account.Name, Account.Industry
             FROM Contact
         ];
 
@@ -18,8 +18,9 @@ public with sharing class WeekTwoHomework {
     }
 
     public static void accountsWithClosedWonOpportunities() {
-        List<Account> accountList = [
-            SELECT ID, Name, (SELECT ID, Name FROM Opportunity WHERE StageName = 'Closed Won')
+        //Query uses child relationship name (Note: Opportunities not Opportunity) . Returns all accounts, so if it had no close won opportunities number will be zero
+        List<Account> accountList = [  
+        SELECT ID, Name, (SELECT ID, Name FROM Opportunities WHERE StageName = 'Closed Won')
             FROM Account
         ];
 
@@ -29,9 +30,9 @@ public with sharing class WeekTwoHomework {
 
     }
     
-    public static Map<String, Opportunity> returnOpportunityMap() {
+    public static Map<Id, Opportunity> returnOpportunityMap() {
         //returns all standard fields as fields were not specified, and fields(all) is limited to max 200 records
-        return [SELECT FIELDS(STANDARD) FROM Opportunity];
+        return new Map<Id, Opportunity>([SELECT FIELDS(STANDARD) FROM Opportunity]);
     }
 
     public static Integer returnCountOfOpportunities() {
